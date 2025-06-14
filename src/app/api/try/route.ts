@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server';
 
+import { NotionToMarkdown } from "notion-to-md";
+import { markdownToBlocks, markdownToRichText } from '@tryfabric/martian';
+
 // GET /api/try
 export async function GET(request: Request) {
     console.log(request);
@@ -23,8 +26,8 @@ export async function POST(request: Request) {
 ### 出力
 - md形式のデータ or Notion形式のデータ
 ### メモ
-- Notion->mdは、
-- md->Notionは、
+- Notion->mdは、notion-to-mdを使う
+- md->Notionは、martianを使う
 
 ## データベースの取得
 ### 入力
