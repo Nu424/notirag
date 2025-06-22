@@ -316,6 +316,7 @@ export class RAGService {
     // 関連性分析用プロンプト
     this.relevancePrompt = PromptTemplate.fromTemplate(`
 あなたは情報検索の専門家です。以下の入力クエリと、ページのキーワードを分析し、関連性を判定してください。
+ページキーワードは情報を要約したものであるため、キーワードから連想して、入力クエリと関連性があるかを判定してください。
 
 入力クエリ: {input}
 ページタイトル: {title}
@@ -402,7 +403,15 @@ export class RAGService {
             keywords: page.keywords.join(', ')
           });
 
+          // console.log("--------------------------------")
+          // console.log('relevanceData');
+          // console.log(relevanceData);
+          // console.log("--------------------------------")
           const response = await llm.invoke(relevanceData);
+          // console.log("--------------------------------")
+          // console.log('response');
+          // console.log(response);
+          // console.log("--------------------------------")
 
           try {
             return {
