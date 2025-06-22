@@ -74,9 +74,13 @@ export async function POST(
                 additionalContent: content,
             });
 
+            // ページのキーワードを更新
+            const newKeywords = await createPageKeywords(mergedContent);
+
             // ページを更新
             await notionService.updatePage(targetPageId, {
-                content: mergedContent
+                content: mergedContent,
+                keywords: newKeywords
             });
 
         } else {
