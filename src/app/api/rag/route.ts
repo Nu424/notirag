@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
         // ---サービスの初期化・データベースの取得
         const llm = new ChatOpenAI({
             openAIApiKey: openaiApiKey,
-            modelName: ragConfig?.llmModel || 'gpt-4o-mini',
+            modelName: ragConfig?.llmModel || process.env.OPENAI_MODEL || 'gpt-4o-mini',
             temperature: ragConfig?.temperature || 0.1,
         });
 

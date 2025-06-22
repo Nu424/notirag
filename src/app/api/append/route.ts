@@ -54,7 +54,7 @@ export async function POST(
         const notionService = new NotionService(apiKey);
         const llm = new ChatOpenAI({
             openAIApiKey: openaiApiKey,
-            modelName: "gpt-4o-mini",
+            modelName: process.env.OPENAI_MODEL || "gpt-4o-mini",
         });
         const ragService = new RAGService(llm, notionService);
 
@@ -109,13 +109,13 @@ export async function POST(
                     createPageTitle(content),
                     createPageKeywords(content)
                 ]);
-                console.log("--------------------------------")
-                console.log('newTitle');
-                console.log(newTitle);
-                console.log("--------------------------------")
-                console.log('newKeywords');
-                console.log(newKeywords);
-                console.log("--------------------------------")
+                // console.log("--------------------------------")
+                // console.log('newTitle');
+                // console.log(newTitle);
+                // console.log("--------------------------------")
+                // console.log('newKeywords');
+                // console.log(newKeywords);
+                // console.log("--------------------------------")
                 const newPage = await notionService.createPage({
                     databaseId,
                     title: newTitle,
@@ -187,7 +187,7 @@ async function createPageKeywords(content: string): Promise<string[]> {
     // ---LLMの用意・実行
     const llm = new ChatOpenAI({
         openAIApiKey: process.env.OPENAI_API_KEY,
-        modelName: "gpt-4o-mini",
+        modelName: process.env.OPENAI_MODEL || "gpt-4o-mini",
     });
     const response = await llm.invoke(prompt);
 
@@ -212,7 +212,7 @@ async function createPageTitle(content: string): Promise<string> {
     // ---LLMの用意・実行
     const llm = new ChatOpenAI({
         openAIApiKey: process.env.OPENAI_API_KEY,
-        modelName: "gpt-4o-mini",
+        modelName: process.env.OPENAI_MODEL || "gpt-4o-mini",
     });
     const response = await llm.invoke(prompt);
 

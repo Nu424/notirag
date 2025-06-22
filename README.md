@@ -10,7 +10,15 @@ Notionのデータベースをもとに、RAGアプリを作成するアプリ�
 
 ```
 NOTION_API_KEY=your_notion_api_key_here
+OPENAI_API_KEY=your_openai_api_key_here
+OPENAI_MODEL=gpt-4o-mini
 ```
+
+#### 環境変数の説明
+
+- `NOTION_API_KEY`: Notion APIへのアクセスキー（必須）
+- `OPENAI_API_KEY`: OpenAI APIへのアクセスキー（必須、RAG機能で使用）
+- `OPENAI_MODEL`: 使用するOpenAIモデル名（オプション、デフォルト: gpt-4o-mini）
 
 #### Notion API Keyの取得方法
 

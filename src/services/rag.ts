@@ -83,7 +83,9 @@ export class RAGService {
    * 
    * @example
    * ```typescript
-   * const llm = new ChatOpenAI({ modelName: "gpt-3.5-turbo" });
+   * const llm = new ChatOpenAI({ 
+   *   modelName: process.env.OPENAI_MODEL || "gpt-4o-mini" 
+   * });
    * const ragService = new RAGService(llm, notionService, {
    *   relevanceThreshold: 0.4,
    *   maxContextLength: 4000
@@ -98,7 +100,7 @@ export class RAGService {
     this.llm = llmModel;
     this.notionService = notionService;
     this.config = {
-      llmModel: 'gpt-4.1',
+      llmModel: process.env.OPENAI_MODEL || 'gpt-4o-mini',
       relevanceThreshold: 0.3,
       maxContextLength: 4000,
       batchSize: 10,
