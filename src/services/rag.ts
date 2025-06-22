@@ -506,27 +506,6 @@ export class RAGService {
   }
 
   /**
-   * 信頼度の計算
-   * 
-   * @private
-   */
-  private calculateConfidence(context: PageRelevanceResult[]): number {
-    if (context.length === 0) return 0;
-
-    // 上位3つの関連度スコアの平均を基に信頼度を計算
-    const topScores = context
-      .slice(0, 3)
-      .map(result => result.relevanceScore);
-
-    const averageScore = topScores.reduce((sum, score) => sum + score, 0) / topScores.length;
-
-    // 使用可能なページ数も考慮
-    const pageCountFactor = Math.min(context.length / 5, 1); // 5ページ以上で最大
-
-    return Math.min(averageScore * (0.7 + 0.3 * pageCountFactor), 1);
-  }
-
-  /**
    * 配列を指定サイズのチャンクに分割
    * 
    * @private
