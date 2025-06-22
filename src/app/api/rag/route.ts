@@ -59,8 +59,16 @@ export async function POST(request: NextRequest) {
             });
         }
 
+        // ---すべての関連ページに対して、ページの内容を取得する
+        for (const relevantPage of relevantPages) {
+            await ragService.setPageContentToPageRelevanceResult(relevantPage);
+        }
+
         // ---関連ページをコンテキストとして、回答を生成する
         console.log(`Generating response with ${relevantPages.length} relevant pages...`);
+        // console.log("--------------------------------")
+        // console.log(relevantPages[0].page.content)
+        // console.log("--------------------------------")
         const response: RAGResponse = await ragService.generateResponse({
             query,
             relevantPages,

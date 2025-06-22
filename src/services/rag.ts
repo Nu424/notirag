@@ -102,7 +102,7 @@ export class RAGService {
       relevanceThreshold: 0.3,
       maxContextLength: 4000,
       batchSize: 10,
-      cacheEnabled: true,
+      cacheEnabled: false,
       temperature: 0.1,
       maxResults: 20,
       ...config
@@ -188,6 +188,20 @@ export class RAGService {
   }
 
   /**
+   * PageRelevanceResultオブジェクトに、読み込んだページの内容をセットする✅️
+   * 
+   * @param pageRelevanceResult - 関連ページの結果
+   * @returns 関連ページの結果
+   * @note analyzeRelevanceでは、ページのキーワードだけを読み込んでおり、ページの内容は読み込んでいない
+   * @note このメソッドを呼び出すことで、ページの内容を読み込むことができる
+   */
+  public async setPageContentToPageRelevanceResult(pageRelevanceResult: PageRelevanceResult): Promise<PageRelevanceResult> {
+    const page = await this.notionService.getPage(pageRelevanceResult.page.id);
+    pageRelevanceResult.page.content = page.content || '';
+    return pageRelevanceResult;
+  }
+
+  /**
    * 既存コンテンツと新規コンテンツを適切にマージします✅️
    * 
    * @param request - マージリクエスト（元コンテンツ、追加コンテンツ、戦略）
@@ -264,7 +278,10 @@ export class RAGService {
         optimizedContext,
         request.includeSources ?? false
       );
-
+      // console.log("--------------------------------")
+      // console.log('responsePrompt');
+      // console.log(responsePrompt);
+      // console.log("--------------------------------")
       // LLMによる回答生成
       const answer = await this.llm.invoke(responsePrompt);
 
