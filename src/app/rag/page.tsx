@@ -1,6 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Button from '@/components/ui/Button';
+import Card from '@/components/ui/Card';
+import Alert from '@/components/ui/Alert';
 import type { RAGResponse, RAGServiceConfig } from '@/types/rag';
 
 interface RAGPageConfig {
@@ -93,48 +96,49 @@ export default function RAGPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 dark:bg-gray-900">
-      <div className="max-w-4xl mx-auto px-4">
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* ヘッダー */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Notion RAG テストページ
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+            RAG検索
           </h1>
-          <p className="text-gray-600">
-            NotionデータベースをRAGのデータソースとして使用し、質問に対する回答を生成します
+          <p className="text-lg text-gray-600">
+            NotionデータベースをRAGのデータソースとして使用し、自然言語での質問に対する回答を生成します。
           </p>
         </div>
 
         {/* 設定セクション */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+        <Card className="mb-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-semibold text-gray-800">設定</h2>
-            <button
+            <Button
               onClick={() => setShowConfig(!showConfig)}
-              className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+              variant="ghost"
+              size="sm"
             >
               {showConfig ? '非表示' : '表示'}
-            </button>
+            </Button>
           </div>
 
           {showConfig && (
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   データベースID
                 </label>
                 <input
                   type="text"
                   value={config.databaseId}
                   onChange={(e) => setConfig(prev => ({ ...prev, databaseId: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
                   placeholder="550e8400-e29b-41d4-a716-446655440000"
                 />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     関連性閾値
                   </label>
                   <input
@@ -147,12 +151,12 @@ export default function RAGPage() {
                       ...prev,
                       ragConfig: { ...prev.ragConfig, relevanceThreshold: parseFloat(e.target.value) }
                     }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     最大結果数
                   </label>
                   <input
@@ -164,107 +168,122 @@ export default function RAGPage() {
                       ...prev,
                       ragConfig: { ...prev.ragConfig, maxResults: parseInt(e.target.value) }
                     }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
                   />
                 </div>
               </div>
 
-              <button
+              <Button
                 onClick={saveConfig}
-                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                variant="outline"
               >
                 設定を保存
-              </button>
+              </Button>
             </div>
           )}
-        </div>
+        </Card>
 
         {/* クエリ入力セクション */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+        <Card className="mb-6">
           <h2 className="text-xl font-semibold text-gray-800 mb-4">質問入力</h2>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 質問・クエリ
               </label>
               <textarea
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
                 rows={3}
                 placeholder="例: 新製品のアイデアについて教えて"
               />
             </div>
 
-            <button
+            <Button
               onClick={executeRAG}
+              loading={isLoading}
               disabled={isLoading}
-              className="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              variant="secondary"
+              size="lg"
+              className="w-full"
             >
-              {isLoading ? '処理中...' : 'RAG実行'}
-            </button>
+              RAG実行
+            </Button>
           </div>
-        </div>
+        </Card>
 
         {/* エラー表示 */}
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-            <div className="flex">
-              <div className="text-red-800">
-                <strong>エラー:</strong> {error}
-              </div>
-            </div>
-          </div>
+          <Alert
+            variant="error"
+            title="エラー"
+            onClose={() => setError(null)}
+            className="mb-6"
+          >
+            {error}
+          </Alert>
         )}
 
         {/* 結果表示 */}
         {response && (
           <div className="space-y-6">
             {/* 回答 */}
-            <div className="bg-white rounded-lg shadow-md p-6">
+            <Card variant="elevated">
               <h2 className="text-xl font-semibold text-gray-800 mb-4">回答</h2>
               <div className="prose max-w-none">
-                <div className="text-gray-800 whitespace-pre-wrap">
+                <div className="text-gray-800 whitespace-pre-wrap leading-relaxed">
                   {response.answer}
                 </div>
               </div>
-              <div className="mt-4 text-sm text-gray-500">
-                処理時間: {response.metadata.processingTime}ms
+              <div className="mt-4 pt-4 border-t border-gray-200">
+                <div className="flex items-center justify-between text-sm text-gray-500">
+                  <span>処理時間: {response.metadata.processingTime}ms</span>
+                  <Button
+                    onClick={() => navigator.clipboard.writeText(response.answer)}
+                    variant="ghost"
+                    size="sm"
+                  >
+                    回答をコピー
+                  </Button>
+                </div>
               </div>
-            </div>
+            </Card>
 
             {/* 参考情報 */}
             {response.sources && response.sources.length > 0 && (
-              <div className="bg-white rounded-lg shadow-md p-6">
+              <Card variant="elevated">
                 <h2 className="text-xl font-semibold text-gray-800 mb-4">
                   参考情報 ({response.sources.length}件)
                 </h2>
                 <div className="space-y-4">
                   {response.sources.map((source, index) => (
-                    <div key={source.page.id} className="border border-gray-200 rounded-lg p-4">
+                    <div key={source.page.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
                       <div className="flex items-center justify-between mb-2">
                         <h3 className="font-medium text-gray-900">
                           【{index + 1}】{source.page.title}
                         </h3>
-                        <span className="text-sm text-gray-500">
+                        <span className="text-sm text-gray-500 bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
                           関連度: {(source.relevanceScore * 100).toFixed(1)}%
                         </span>
                       </div>
 
                       {source.matchedKeywords.length > 0 && (
-                        <div className="mb-2">
-                          <span className="text-sm text-gray-600">マッチしたキーワード: </span>
-                          {source.matchedKeywords.map((keyword, idx) => (
-                            <span key={idx} className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mr-1">
-                              {keyword}
-                            </span>
-                          ))}
+                        <div className="mb-3">
+                          <span className="text-sm text-gray-600 mr-2">マッチしたキーワード:</span>
+                          <div className="flex flex-wrap gap-1">
+                            {source.matchedKeywords.map((keyword, idx) => (
+                              <span key={idx} className="inline-block bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded-full">
+                                {keyword}
+                              </span>
+                            ))}
+                          </div>
                         </div>
                       )}
 
                       {source.page.content && (
                         <div className="text-sm text-gray-600 mt-2">
-                          <div className="max-h-32 overflow-y-auto">
+                          <div className="max-h-32 overflow-y-auto bg-gray-50 p-3 rounded border">
                             {source.page.content.substring(0, 200)}
                             {source.page.content.length > 200 && '...'}
                           </div>
@@ -273,26 +292,26 @@ export default function RAGPage() {
                     </div>
                   ))}
                 </div>
-              </div>
+              </Card>
             )}
           </div>
         )}
 
         {/* 使用方法 */}
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mt-8">
+        <Card variant="bordered" className="mt-8 bg-blue-50">
           <h2 className="text-lg font-semibold text-blue-900 mb-3">使用方法</h2>
           <ol className="list-decimal list-inside space-y-2 text-blue-800">
             <li>対象のNotionデータベースIDを入力します</li>
-            <li>設定を保存します（localStorage に保存されます）</li>
+            <li>必要に応じて設定を調整し、保存します（localStorage に保存されます）</li>
             <li>質問やクエリを入力します</li>
             <li>「RAG実行」ボタンをクリックして結果を確認します</li>
           </ol>
           <div className="mt-4 text-sm text-blue-700">
             <strong>注意:</strong> 設定はブラウザのローカルストレージに保存されます。
-            セキュリティを考慮し、テスト終了後は設定をクリアすることをお勧めします。
+            関連性閾値を下げると、より幅広い情報を取得できますが、精度が下がる可能性があります。
           </div>
-        </div>
+        </Card>
       </div>
     </div>
   );
-}
+} 
